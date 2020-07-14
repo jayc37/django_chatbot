@@ -65,13 +65,40 @@
                 </ul> 
               </div>
               <script>
+                function getCookie(name) {
+                  var cookieValue = null;
+                  if (document.cookie && document.cookie !== '') {
+                      var cookies = document.cookie.split(';');
+                      for (var i = 0; i < cookies.length; i++) {
+                          var cookie = jQuery.trim(cookies[i]);
+                          // Does this cookie string begin with the name we want?
+                          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                              break;
+                          }
+                      }
+                  }
+                  return cookieValue;
+                  }
                 function getBotResponse() {
                   var rawText = $("#textInput").val();
                   var userHtml = '<ul><p class="userText"><span>' + rawText + '</span></p></ul>';
                   $("#textInput").val("");
                   $("#chatbox").append(userHtml);
                   document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
-                  $.get("/get", { data: rawText }).done(function(data) {
+                  // $.ajax({
+                  //     url: "/getdata",
+                  //     type: "get",
+                  //     headers: {"X-CSRFTOKEN": getCookie('csrftoken')},
+                  //     data : rawText,
+                  //     success: function(data){
+                  //       console.log(data)
+                  //     },
+                  //     error: function(err){
+                  //       console.log(err.responseText)
+                  //     }
+                  // });
+                  $.get("/getdata", { data: rawText }).done(function(data) {
                         var ar = [];
                         var botHtml = '';
                         for(var m in data) {
