@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+  <title>
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="/static/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="/static/assets/demo/demo.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <!-- Specific Page CSS goes HERE  -->
+
+  <!--   Core JS Files   -->
+  <script src="/static/assets/js/core/jquery.min.js"></script>
+  <script src="/static/assets/js/core/popper.min.js"></script>
+  <script src="/static/assets/js/core/bootstrap.min.js"></script>
+  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!--  Google Maps Plugin    -->
+  <!-- Place this tag in your head or just before your close body tag. -->
+  <!-- Chart JS -->
+  <script src="/static/assets/js/plugins/chartjs.min.js"></script>
+  <!--  Notifications Plugin    -->
+  <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
+  <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="/static/assets/js/black-dashboard.min.js?v=1.0.0"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+  <script src="/static/assets/demo/demo.js"></script>
+  
+</head>
+<body>
+  
+
+<div class="row">
+  <div class="col-lg-12">
+ <div class="container">
+        <div class="card">
+          <div class="card-header ">
+            <h4 class="title d-inline">CHATBOT</h4>
+          </div>
+          <div class="card-body ">
+            <div>
+              <div id="chatbox">
+                  <ul>
+                    <p class="botText"><span>Hi! I'm COVID19-BOT.</span></p>
+                  </ul>
+              </div>
+              <div id="userInput">
+                <ul>
+                    <input id="textInput" type="text" name="data" placeholder="Message">
+                    <input id="buttonInput" type="submit" value="Send">
+                </ul> 
+              </div>
+              <script>
+                function getBotResponse() {
+                  var rawText = $("#textInput").val();
+                  var userHtml = '<ul><p class="userText"><span>' + rawText + '</span></p></ul>';
+                  $("#textInput").val("");
+                  $("#chatbox").append(userHtml);
+                  document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+                  $.get("/get", { data: rawText }).done(function(data) {
+                        var ar = [];
+                        var botHtml = '';
+                        for(var m in data) {
+                            var u = data[m];
+                          ar.push(u);
+                          };
+                        if (typeof(data) != 'string'){
+                            var strings = '';
+                            for (var i=0;i<ar.length;i++){
+                                var stringss = '<tr>';
+                                arr = ar[i];
+                                for (var j = 0;j <arr.length;j ++){
+                                    for (var cc = 0; cc < arr[j].length; cc++){
+                                        var str = '<th>'+ arr[j][cc] + '</th>';
+                                        stringss =  stringss.concat(str);
+                                    }
+                                stringss = stringss.concat('</tr>');
+                                };
+                                strings = strings.concat(stringss);
+                            };
+                          botHtml = '<table class="table" ><tbody>' + strings + '</tbody></table>';
+
+                          }
+                        else{
+                         botHtml = '<ul><p class="botText"><span>' + data + '</span></p></ul>';
+
+                        }
+                    $("#chatbox").append(botHtml);
+                    document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+                  });
+                }
+                $("#textInput").keypress(function(e) {
+                    if ((e.which == 13) && document.getElementById("textInput").value != "" ){
+                        getBotResponse();
+                    }
+                });
+                $("#buttonInput").click(function() {
+                    if (document.getElementById("textInput").value != "") {
+                        getBotResponse();
+                    }
+                    
+                })
+              </script>
+            </div>          
+          </div>
+        </div>
+      </div>
+    </div>      
+  </div>
+  <script>
+    $(document).ready(function() {
+      demo.initDashboardPageCharts();
+    });
+  </script>
+</body>
